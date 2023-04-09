@@ -40,15 +40,15 @@ class CartRemoveView(View):
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'orders/order.html'
-    form_class = CouponForm
+    # form_class = CouponForm
     model = Order
     pk_url_kwarg = 'order_id'
     context_object_name = 'order'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.form_class()
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['form'] = self.form_class()
+    #     return context
 
 
 class OrderCreateView(LoginRequiredMixin, View):
@@ -101,26 +101,26 @@ class OrderPayView(LoginRequiredMixin, View):
         return redirect('products:products')
 
 
-class CouponApplyView(LoginRequiredMixin, View):
-    form_class = CouponForm
-
-    def post(self, request, order_id):
-        now = datetime.now()
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            code = form.cleaned_data['code']
-            try:
-                coupon = Coupon.objects.get(
-                    code=code,
-                    valid_form__lte=now,
-                    valid_to__gte=now,
-                    is_active=True
-                )
-            except Coupon.DoesNotExist:
-                messages.error(request, 'coupon does not exist', 'danger')
-                return redirect('orders:order_detail', order_id)
-
-            order = Order.objects.get(id=order_id)
-            order.discount = coupon.discount
-            order.save()
-            return redirect('orders:order_detail', order_id)
+# class CouponApplyView(LoginRequiredMixin, View):
+#     form_class = CouponForm
+#
+#     def post(self, request, order_id):
+#         now = datetime.now()
+#         form = self.form_class(request.POST)
+#         if form.is_valid():
+#             code = form.cleaned_data['code']
+#             try:
+#                 coupon = Coupon.objects.get(
+#                     code=code,
+#                     valid_form__lte=now,
+#                     valid_to__gte=now,
+#                     is_active=True
+#                 )
+#             except Coupon.DoesNotExist:
+#                 messages.error(request, 'coupon does not exist', 'danger')
+#                 return redirect('orders:order_detail', order_id)
+#
+#             order = Order.objects.get(id=order_id)
+#             order.discount = coupon.discount
+#             order.save()
+#             return redirect('orders:order_detail', order_id)
