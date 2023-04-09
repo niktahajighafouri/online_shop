@@ -1,13 +1,12 @@
-from django.shortcuts import render
 
 # Create your views here.
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.views import View
 from django.views.generic import DetailView, ListView, DetailView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import Category, Product
-# from utils import IsAdminUserMixing
+from permissions import IsAdminUserMixing
 # from orders.forms import CartAddForm
 
 # Create your views here.
@@ -38,3 +37,15 @@ class ProductDetailView(DetailView):
     #     context = super().get_context_data(**kwargs)
     #     context['form'] = self.form_class()
     #     return context
+
+
+class AdminHomeView(IsAdminUserMixing, ListView):
+    template_name = 'products/bucket.html'
+    model = Product
+    context_object_name = 'objects'
+
+
+class AdminProductDelete(IsAdminUserMixing, DetailView):
+    model = Product
+    success_url = reverse_lazy('products:bucket')
+    template_name = 'products/delete.html'
