@@ -11,13 +11,13 @@ from products.models import Product
 
 
 # Create your views here.
-class CartView(TemplateView):
+class CartView(View):
     template_name = 'orders/cart.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['cart'] = Cart(self.request)
-        return context
+    def get(self, request):
+        context = {
+            'cart': Cart(request)
+        }
+        return  render(request, self.template_name, context)
 
 
 class CartAddView(View):
@@ -38,19 +38,22 @@ class CartRemoveView(View):
         return redirect('orders:cart')
 
 
-class OrderDetailView(LoginRequiredMixin, DetailView):
+class OrderDetailView(LoginRequiredMixin, View):
     template_name = 'orders/order.html'
     # form_class = CouponForm
-    model = Order
-    pk_url_kwarg = 'order_id'
-    context_object_name = 'order'
+    # model = Order
+    # pk_url_kwarg = 'order_id'
+    # context_object_name = 'order'
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     context['form'] = self.form_class()
     #     return context
 
-
+    def get(self, request, order_id):
+        order = Order.objects.get(pk=order_id)
+        context = {'order': order}
+        return render(request, self.template_name, context)
 class OrderCreateView(LoginRequiredMixin, View):
     def get(self, request):
         cart = Cart(request)

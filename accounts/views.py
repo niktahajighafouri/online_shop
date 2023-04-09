@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic import FormView, CreateView
 from django.contrib import messages
@@ -54,6 +54,16 @@ class UserLogoutView(LoginRequiredMixin, View):
         logout(request)
         messages.success(request, 'you logged out successfully', 'success')
         return redirect('products:products')
+
+
+class AccountView(LoginRequiredMixin, View):
+    template_name = 'accounts/account.html'
+    def get(self, request):
+
+        context = {
+            'profile': request.user
+        }
+        return render(request, self.template_name, context)
 
 # -------------------- Reset Password---------------------------
 class UserPasswordResetView(auth_views.PasswordResetView):

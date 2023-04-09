@@ -6,9 +6,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import Category, Product
 from permissions import IsAdminUserMixing
-
-
-# from orders.forms import CartAddForm
+from orders.forms import CartAddForm
 
 # Create your views here.
 class ProductView(View):
@@ -30,14 +28,14 @@ class ProductView(View):
 
 class ProductDetailView(DetailView):
     template_name = 'products/product_details.html'
-    # form_class = CartAddForm
+    form_class = CartAddForm
     model = Product
     context_object_name = 'product'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['form'] = self.form_class()
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class()
+        return context
 
 
 class AdminHomeView(IsAdminUserMixing, ListView):
